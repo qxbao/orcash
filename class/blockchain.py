@@ -16,8 +16,6 @@ class Blockchain:
         for (i, block) in enumerate(self.data):
             if i == 0:
                 continue
-            if block.hash != block.hashme():
-                return False
-            if block.last_hash != self.data[i - 1].hashme():
+            if block.last_hash != self.data[i - 1].hashme(block.proof):
                 return False
         return True

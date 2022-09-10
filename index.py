@@ -1,5 +1,6 @@
 from hashlib import sha256
 import sys
+from random import randint
 sys.path.append('class/')
 import functools
 from block import Block
@@ -58,6 +59,8 @@ def mine_block(name):
             print('Bạn đã đào thành công block số {}. Đang xác minh tính chân thực...'.format(len(blockchain.data) + 1))
             if blockchain.last_block().hashme(proof) == hashed:
                 print('---HÀM BĂM TRÙNG KHỚP---')
+                if not blockchain.verify():
+                    return print('Blockchain xuất hiện xung đột thông tin. Block của bạn không được chấp thuận')
                 reward = Transaction('Mine', name, 2.5)
                 transactions.append(reward)
                 new_block = Block(len(blockchain.data) + 1, hashed, [trans.__dict__ for trans in transactions], proof)
