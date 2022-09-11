@@ -1,9 +1,8 @@
 from hashlib import sha256
 import math
-from block import Block
-from verification import Verification as moderator
-from transaction import Transaction
-
+from utility.block import Block
+from utility.verification import Verification as moderator
+from utility.transaction import Transaction
 
 class Blockchain:
     def __init__(self, hosting_node_id):

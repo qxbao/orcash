@@ -1,6 +1,4 @@
-import sys
-sys.path.append('class/')
-from node import Node
+from utility.node import Node
 
 my = Node()
 

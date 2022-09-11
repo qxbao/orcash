@@ -1,6 +1,6 @@
-from blockchain import Blockchain
-from transaction import Transaction
-from verification import Verification as moderator
+from utility.blockchain import Blockchain
+from utility.transaction import Transaction
+from utility.verification import Verification as moderator
 from uuid import uuid4
 
 class Node:
