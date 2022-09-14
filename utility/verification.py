@@ -1,4 +1,5 @@
 import functools
+from utility.wallet import Wallet
 
 class Verification:
     @staticmethod
@@ -18,7 +19,7 @@ class Verification:
         just_spent = functools.reduce(lambda a, b: a + b, just_spent, 0)
         just_received = functools.reduce(lambda a, b: a + b, just_received, 0)
         if sender_balance >= transaction.amount - just_received + just_spent:
-            return True
+            return True and Wallet.verify_transaction(transaction)
         return False
 
     @classmethod

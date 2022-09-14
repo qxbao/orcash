@@ -3,6 +3,7 @@ import math
 from utility.block import Block
 from utility.verification import Verification as moderator
 from utility.transaction import Transaction
+from utility.wallet import Wallet
 
 class Blockchain:
     def __init__(self, hosting_node_id):
@@ -27,9 +28,18 @@ class Blockchain:
         self.__data.append(new_block)
 
     def add_trans(self, transaction):
+        if not self.hosting_node:
+            print('--> Hãy thử tạo một ví cho bản thân')
+            return False
+        if not Wallet.verify_transaction(transaction):
+            return False
         self.__transactions.append(transaction)
+        return True
 
     def mine(self):
+        if not self.hosting_node:
+            print('--> Hãy thử tạo một ví cho bản thân')
+            return False
         block = self.last_block()
         proof = 0
         while(True):
@@ -39,13 +49,16 @@ class Blockchain:
                 print('{}: THÀNH CÔNG!'.format(hashed))
                 print('Bạn đã đào thành công block số {}. Đang xác minh tính chân thực...'.format(len(self.get_data())))
                 if self.last_block().hashme(proof) == hashed:
-                    print('---HÀM BĂM TRÙNG KHỚP---')
                     if not moderator.verify_chain(self.get_data()):
                         return print('Blockchain xuất hiện xung đột thông tin. Block của bạn không được chấp thuận')
-                    print('---KẾT QUẢ ĐÃ ĐƯỢC XÁC MINH---')
-                    reward = Transaction('Mine', self.hosting_node, self.reward)
-                    self.add_trans(reward)
-                    new_block = Block(len(self.get_data()) + 1, hashed, [trans.__dict__ for trans in self.get_trans()], proof)
+                    for trans in self.get_trans():
+                        if not Wallet.verify_transaction(trans):
+                            print('Block của bạn tồn tại giao dịch bất thường... Không chấp thuận')
+                            return False
+                    reward = Transaction('Mine', self.hosting_node, self.reward, 'Orca')
+                    copied_trans = self.get_trans()
+                    copied_trans.append(reward)
+                    new_block = Block(len(self.get_data()) + 1, hashed, [trans.__dict__ for trans in copied_trans], proof)
                     self.add_block(new_block)
                     self.__transactions = []
                     print('{} nhận được {} coin. Xin chúc mừng '.format(self.hosting_node, self.reward))
